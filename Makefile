@@ -19,7 +19,7 @@ CFLAGS += -DPLATFORM_$(PLATFORM)
 CPPFLAGS += $(addprefix -I, $(INC_DIRS))
 
 # ===== Files =====
-OBJS = boot/head.o kernel/kmain.o kernel/uart.o
+OBJS = boot/head.o kernel/kmain.o kernel/uart.o kernel/mmu.o
 
 # ===== Targets =====
 .PHONY: all clean run runbin dump
@@ -36,6 +36,10 @@ boot/head.o: boot/head.S
 	$(CC) $(ASFLAGS) -c $< -o $@
 
 kernel/uart.o: kernel/uart.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+
+kernel/mmu.o: kernel/mmu.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 kernel/kmain.o: kernel/kmain.c
