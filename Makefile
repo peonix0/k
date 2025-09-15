@@ -19,7 +19,8 @@ CFLAGS += -DPLATFORM_$(PLATFORM)
 CPPFLAGS += $(addprefix -I, $(INC_DIRS))
 
 # ===== Files =====
-OBJS = boot/head.o kernel/kmain.o kernel/uart.o kernel/mmu.o
+OBJS = boot/head.o boot/vector_el1.o \
+       kernel/kmain.o kernel/uart.o kernel/mmu.o kernel/exception.o
 
 # ===== Targets =====
 .PHONY: all clean run runbin dump
@@ -32,12 +33,18 @@ k.elf: $(OBJS) linker.ld
 k.bin: k.elf
 	$(OBJCOPY) -O binary $< $@
 
+boot/vector_el1.o: boot/vector_el1.S
+	$(CC) $(ASFLAGS) -c $< -o $@
+
 boot/head.o: boot/head.S
 	$(CC) $(ASFLAGS) -c $< -o $@
 
-kernel/uart.o: kernel/uart.c
+kernel/exception.o: kernel/exception.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
+
+kernel/uart.o: kernel/uart.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 kernel/mmu.o: kernel/mmu.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
