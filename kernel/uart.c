@@ -1,5 +1,6 @@
 #include "uart.h"
 #include "stdint.h"
+#include <stdint.h>
 
 static inline void mmio_w(uint64_t a, uint32_t v){ *(volatile uint32_t*)a = v; }
 static inline uint32_t mmio_r(uint64_t a){ return *(volatile uint32_t*)a; }
@@ -70,4 +71,27 @@ void uart_putb(const char* s, const uint64_t val) {
     }
 
     uart_putc('\n');
+}
+
+void uart_putx(const uint64_t val) {
+    uint8_t leadz = 1;
+    uart_puts("0x");
+    for(int i=60; i>=0; i-=8) {
+        char c1 = (val >> i & 0xF);
+        char c2 = (val >> (i - 4) & 0xF);
+
+        if (!(c1 || c2) && leadz) {
+            continue;
+        }
+        else if (leadz) {
+            leadz = 0;
+        }
+
+        uart_putc(c1 + (c1 < 10 ? '0' : 'A' - 10));
+        uart_putc(c2 + (c2 < 10 ? '0' : 'A' - 10));
+    }
+
+    if (leadz) {
+        uart_puts("00");
+    }
 }
