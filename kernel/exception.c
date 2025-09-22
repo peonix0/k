@@ -1,7 +1,8 @@
 // kernel/exception.c
+#include "common.h"
 #include "uart.h"
 
-static const char *exception_class_to_name(uint8_t ec) {
+static const char *exception_class_to_name(u8 ec) {
   switch (ec) {
   case 0b000000:
     return "Unknown";
@@ -20,8 +21,8 @@ static const char *exception_class_to_name(uint8_t ec) {
   }
 }
 
-void sync_handler_el1(uint64_t esr, uint64_t elr, uint64_t spsr, uint64_t far) {
-  uint8_t ec = (esr >> 26) & 0x3f;
+void sync_handler_el1(u64 esr, u64 elr, u64 spsr, u64 far) {
+  u8 ec = (esr >> 26) & 0x3f;
   uart_puts("\n[SYNCH] EL1h\n");
 
   uart_putb("  ESR:", esr);
@@ -44,7 +45,7 @@ void sync_handler_el1(uint64_t esr, uint64_t elr, uint64_t spsr, uint64_t far) {
   }
 }
 
-void irq_handler_el1(uint64_t esr, uint64_t elr, uint64_t spsr, uint64_t far) {
+void irq_handler_el1(u64 esr, u64 elr, u64 spsr, u64 far) {
   (void)esr;
   (void)elr;
   (void)spsr;
