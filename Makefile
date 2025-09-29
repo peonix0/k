@@ -20,7 +20,8 @@ CPPFLAGS += $(addprefix -I, $(INC_DIRS))
 
 # ===== Files =====
 OBJS = boot/head.o boot/vector_el1.o \
-       kernel/kmain.o kernel/uart.o kernel/mmu.o kernel/exception.o
+       kernel/kmain.o kernel/uart.o kernel/mmu.o kernel/exception.o \
+       kernel/generic_timer.o kernel/gic.o
 
 # ===== Targets =====
 .PHONY: all clean run runbin dump
@@ -43,7 +44,13 @@ kernel/exception.o: kernel/exception.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 
+kernel/generic_timer.o: kernel/generic_timer.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
 kernel/uart.o: kernel/uart.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+kernel/gic.o: kernel/gic.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 kernel/mmu.o: kernel/mmu.c
@@ -54,7 +61,7 @@ kernel/kmain.o: kernel/kmain.c
 
 # Run using ELF as kernel (some QEMU builds accept this)
 run: k.elf
-	$(QEMU) -machine virt -cpu cortex-a53 -nographic -kernel k.elf
+	$(QEMU) -machine virt,gic-version=3 -cpu cortex-a53 -nographic  -kernel k.elf -smp 1
 
 # Fallback: load raw binary at our link address (matches linker.ld)
 runbin: k.bin

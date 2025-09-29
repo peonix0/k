@@ -2,13 +2,15 @@
 #include "generic_timer.h"
 #include "mmu.h"
 #include "uart.h"
+#include "gic.h"
+
 
 void run_clock() {
   static u64 ptick = 0;
   static u64 cnt = 0;
   u64 tick;
 
-  tick = timer_get_pct();
+  tick = READ_SYSREG64(CNTPCT_EL0);
 
   if ((ptick & (1 << 26)) ^ (tick & (1 << 26))) {
     bool istatus = timer_istatus();
@@ -17,6 +19,7 @@ void run_clock() {
     uart_putx(cnt++);
     uart_puts("\r");
   }
+
   ptick = tick;
 }
 
@@ -67,6 +70,8 @@ void kmain(void *dtb) {
   uart_puts(" CNTPCT_EL0: ");
   uart_putx(ticks);
   uart_puts("\n");
+
+  gic_init();
 
   for (;;) {
     __asm__ __volatile__("wfe");

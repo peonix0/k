@@ -8,6 +8,9 @@
 
 #include "common.h"
 
+#define INTID_GENERIC_TIMER_P 30
+#define INTID_GENERIC_TIMER_V 27
+
 typedef enum {
   CNTP_CTL_EL0, // 0: Enable, IMask, IStatus
   CNTP_CVAL_EL0,

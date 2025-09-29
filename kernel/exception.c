@@ -1,6 +1,13 @@
-// kernel/exception.c
+/* SPDX-License-Identifier: MIT
+ * Exception, not of expectation
+
+ * I'm am one of those
+*/
+
 #include "common.h"
 #include "uart.h"
+#include "gic.h"
+#include "generic_timer.h"
 
 static const char *exception_class_to_name(u8 ec) {
   switch (ec) {
@@ -45,12 +52,43 @@ void sync_handler_el1(u64 esr, u64 elr, u64 spsr, u64 far) {
   }
 }
 
-void irq_handler_el1(u64 esr, u64 elr, u64 spsr, u64 far) {
-  (void)esr;
-  (void)elr;
-  (void)spsr;
-  (void)far;
-  uart_puts("[IRQ]\n");
+void irq_handler_el1() {
+  uart_puts("\n[IRQ] EL1h\n");
 }
-void fiq_handler_el1() { uart_puts("[FIQ]\n"); }
+
+void fiq_handler_el1() {
+  u64 reg, iar;
+  u32 intid;
+
+  iar = gic_ack();
+  intid = iar & 0xFFFFF;
+
+  uart_puts("\n[FIQ] EL1h\n");
+  uart_puts(" INTID: ");
+  uart_putx(intid);
+  uart_puts("\n");
+
+  reg = READ_SYSREG64(ICC_RPR_EL1) & 0xFF;
+  uart_puts(" ICC_RPR_EL1 [PRE]: ");
+  uart_putx(reg);
+  uart_puts("\n");
+
+  if((u32)intid == 30) {
+    /* Generic Timer */
+    gic_eoi1(iar);
+
+    // TODO: Remove this later
+    timer_setp_tval(1u<<30);
+    gic_dump_info();
+  } else if ( intid == 33) {
+    /* Uart */
+    gic_eoi1(iar);
+    uart_puts(" [UART Interrupt Recieved]\n");
+  }
+
+  reg = READ_SYSREG64(ICC_RPR_EL1) & 0xFF;
+  uart_puts(" ICC_RPR_EL1 [POST]: ");
+  uart_putx(reg);
+  uart_puts("\n");
+}
 void serr_handler_el1() { uart_puts("[SError]\n"); }

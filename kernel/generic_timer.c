@@ -5,6 +5,7 @@
 */
 
 #include "generic_timer.h"
+#include "gic.h"
 
 void timer_reg_write(timer_reg reg, u64 val) {
   switch (reg) {
@@ -43,6 +44,7 @@ void timer_enable_el0_access() {
 void timer_interrupt_set(bool enable) {
   // 0: TIMER_ENABLE, IMASK_, ISTATUS
   WRITE_SYSREG64(CNTP_CTL_EL0, enable);
+  gic_enable_intid(INTID_GENERIC_TIMER_P);
 }
 
 void timer_event_stream_init() {
