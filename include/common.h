@@ -24,6 +24,17 @@ typedef _Bool             bool;
 #define false ((bool)0)
 
 
+static inline void mmio_w8(u64 a, u8 v){ *(volatile u8*)a = v; }
+static inline u32 mmio_r8(u64 a){ return *(volatile u8*)a; }
+
+
+static inline void mmio_w32(u64 a, u32 v){ *(volatile u32*)a = v; }
+static inline u32 mmio_r32(u64 a){ return *(volatile u32*)a; }
+
+static inline void mmio_w64(u64 a, u64 v){ *(volatile u64*)a = v; }
+static inline u32 mmio_r64(u64 a){ return *(volatile u64*)a; }
+
+
 // TODO: ---- Add printk -----//
 
 // ---------- sysreg helpers -----------
