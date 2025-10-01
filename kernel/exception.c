@@ -79,7 +79,7 @@ void fiq_handler_el1() {
 
     // TODO: Remove this later
     timer_setp_tval(1u<<30);
-    gic_dump_info();
+    gicr_dump_info();
   } else if ( intid == 33) {
     /* Uart */
     gic_eoi1(iar);
