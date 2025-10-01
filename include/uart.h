@@ -8,4 +8,5 @@ void uart_putc(char c);
 void uart_puts(const char* s);
 void uart_putb(const char* s, const u64 val);
 void uart_putx(const u64 val);
+void uart_logx(const char *s, const u64 val);
 #endif // __UART_H__

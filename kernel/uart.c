@@ -1,9 +1,6 @@
 #include "uart.h"
-#include "stdint.h"
-#include <stdint.h>
-
-static inline void mmio_w(uint64_t a, uint32_t v){ *(volatile uint32_t*)a = v; }
-static inline uint32_t mmio_r(uint64_t a){ return *(volatile uint32_t*)a; }
+#include "common.h"
+#include "gic.h"
 
 #if defined(PLATFORM_qemu)
 /* ============ QEMU virt: PL011 @ 0x09000000 ============ */
@@ -56,11 +53,11 @@ void uart_puts(const char* s){
     }
 }
 
-void uart_putb(const char* s, const uint64_t val) {
+void uart_putb(const char* s, const u64 val) {
     uart_puts(s);
 
     for(int i=63; i>=0; i--){
-        if (val & (1 << i))
+        if (val & (1ull << i))
             uart_putc('1');
         else
             uart_putc('0');
@@ -73,8 +70,8 @@ void uart_putb(const char* s, const uint64_t val) {
     uart_putc('\n');
 }
 
-void uart_putx(const uint64_t val) {
-    uint8_t leadz = 1;
+void uart_putx(const u64 val) {
+    u8 leadz = 1;
     uart_puts("0x");
     for(int i=60; i>=0; i-=8) {
         char c1 = (val >> i & 0xF);
@@ -94,4 +91,10 @@ void uart_putx(const uint64_t val) {
     if (leadz) {
         uart_puts("00");
     }
+}
+
+void uart_logx(const char *s, const u64 val) {
+    uart_puts(s);
+    uart_putx(val);
+    uart_putc('\n');
 }
