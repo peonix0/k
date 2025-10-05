@@ -70,25 +70,28 @@ void fiq_handler_el1() {
   uart_putx(intid);
   uart_puts("\n");
 
-  reg = READ_SYSREG64(ICC_RPR_EL1) & 0xFF;
+  reg = READ_SYSREG64(ICC_RPR_EL1) & 0xF8;
   uart_puts(" ICC_RPR_EL1 [PRE]: ");
   uart_putx(reg);
   uart_puts("\n");
 
-  if((u32)intid == 30) {
+  if (intid == 30) {
     /* Generic Timer */
+
+    gicr_dump_info();
     gic_eoi1(iar);
 
     // TODO: Remove this later
-    timer_setp_tval(1u<<30);
-    gicr_dump_info();
-  } else if ( intid == 33) {
+    timer_setp_tval(1u << 30);
+  } else if (intid == 33) {
     /* Uart */
+    //gicr_dump_info();
+    uart_interrupt_handler();
     gic_eoi1(iar);
     uart_puts(" [UART Interrupt Recieved]\n");
   }
 
-  reg = READ_SYSREG64(ICC_RPR_EL1) & 0xFF;
+  reg = READ_SYSREG64(ICC_RPR_EL1) & 0xF8;
   uart_puts(" ICC_RPR_EL1 [POST]: ");
   uart_putx(reg);
   uart_puts("\n");

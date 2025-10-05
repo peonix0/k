@@ -45,13 +45,12 @@ void kmain(void *dtb) {
   u32 tfreq = 0;
 
   uart_puts("k: hello!\n");
+
   mmu_enable();
   uart_puts("k: mmu enabled!\n");
   uart_puts("k: mmu: hello!\n");
 
   uart_puts("k: timer init!\n");
-
-  timer_interrupt_set(true);
   timer_event_stream_init();
 
   ghost16call();
@@ -72,6 +71,8 @@ void kmain(void *dtb) {
   uart_puts("\n");
 
   gic_init();
+  timer_interrupt_set(true);
+  uart_enable_interrupt();
 
   for (;;) {
     __asm__ __volatile__("wfe");

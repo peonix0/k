@@ -63,7 +63,8 @@ kernel/kmain.o: kernel/kmain.c
 
 # Run using ELF as kernel (some QEMU builds accept this)
 run: k.elf
-	$(QEMU) -machine virt,gic-version=3 -cpu cortex-a53 -nographic  -kernel k.elf -smp 1
+	$(QEMU) -machine virt,gic-version=3 -cpu cortex-a53 -nographic \
+		-serial mon:stdio -kernel k.elf -smp 1
 
 # Fallback: load raw binary at our link address (matches linker.ld)
 runbin: k.bin
