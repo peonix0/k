@@ -15,9 +15,6 @@ static struct {
 static void uart_ring_push(u8 ch) {
   /* Logging */
   uart_logx(" Recieved Byte: ", ch);
-  uart_puts(" Key Pressed: ");
-  uart_putc(ch);
-  uart_putc('\n');
 
   ring.data[ring.cur] = ch;
   ring.cur = (ring.cur + 1) % UART_RING_SIZE;
@@ -180,9 +177,7 @@ void uart_puts(const char *s) {
   }
 }
 
-void uart_putb(const char *s, const u64 val) {
-  uart_puts(s);
-
+void uart_putb(const u64 val) {
   for (int i = 63; i >= 0; i--) {
     if (val & (1ull << i))
       uart_putc('1');
@@ -193,8 +188,6 @@ void uart_putb(const char *s, const u64 val) {
       uart_putc(' ');
     }
   }
-
-  uart_putc('\n');
 }
 
 void uart_putx(const u64 val) {
@@ -219,8 +212,3 @@ void uart_putx(const u64 val) {
   }
 }
 
-void uart_logx(const char *s, const u64 val) {
-  uart_puts(s);
-  uart_putx(val);
-  uart_putc('\n');
-}

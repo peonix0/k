@@ -89,6 +89,7 @@ void mmu_enable(void){
     u64 l2_uart_entry = desc_block_2m(uva, 0x0);
     L2_t1[L2_IDX(uva)] = l2_uart_entry;
 
+
     // map GIC
     u64 gic_dva = 0x08000000;  //64 KB
     // u64 gic_rdva = 0x080A0000; // 2MB, I only care about single frame (128KB)
@@ -117,11 +118,11 @@ void mmu_enable(void){
     // 3) Enable MMU + caches (M|C|I)
     u64 sctlr;
     __asm__ volatile("mrs %0, sctlr_el1" : "=r"(sctlr));
-    uart_putb("sctlr_el1: ", sctlr);
+    uart_logb("sctlr_el1: ", sctlr);
 
     sctlr |= (1u<<0) | (1u<<2) | (1u<<12);
     __asm__ volatile("msr sctlr_el1, %0\nisb" :: "r"(sctlr) : "memory");
 
-    uart_putb("sctlr_el1: ", sctlr);
+    uart_logb("sctlr_el1: ", sctlr);
 }
 
