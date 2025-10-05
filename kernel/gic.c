@@ -112,8 +112,7 @@ void gic_ispend_intid(u32 intid) {
   if (intid > 31) {
     gic_ispend_reg = GICD_ISPENDRn + 4 * (intid / 32);
   } else {
-    // TODO:
-    // gic_ispend_reg = GICR_ISPENDR0;
+    gic_ispend_reg = GICR_ISPENDR0;
   }
 
   mmio_w32(gic_ispend_reg, 1u << bitn);
@@ -136,7 +135,7 @@ void gic_set_priority(u32 intid, u8 priority) {
   u8 byte_offset = intid % 4;
   u64 gic_priority_reg;
 
-  if (intid > 32) {
+  if (intid > 31) {
     gic_priority_reg = GICD_IPRIORITYRn + 4 * (intid / 4);
   } else {
     gic_priority_reg = GICR_IPRIORITYRn + 4 * (intid / 4);
@@ -150,7 +149,7 @@ void gic_set_group(u32 intid, bool grp) {
   u8 bitoff = intid % 32;
   u64 gic_igroup_reg;
 
-  if (intid < 31) {
+  if (intid > 31) {
     gic_igroup_reg = GICD_IGROUPRn + 4 * (intid / 32);
   } else {
     gic_igroup_reg = GICR_IGROUP0;
