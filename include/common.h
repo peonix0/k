@@ -37,6 +37,9 @@ static inline u32 mmio_r64(u64 a){ return *(volatile u64*)a; }
 
 // TODO: ---- Add printk -----//
 
+
+void debug_backtrace();
+
 // ---------- sysreg helpers -----------
 #define READ_SYSREG64(name) ({ \
         u64 _v; \

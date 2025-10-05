@@ -47,6 +47,8 @@ void sync_handler_el1(u64 esr, u64 elr, u64 spsr, u64 far) {
   uart_putx(spsr);
   uart_puts("\n");
 
+  debug_backtrace();
+
   // Hang so we see it
   for (;;) {
   }

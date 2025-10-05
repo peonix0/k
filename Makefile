@@ -11,7 +11,7 @@ INC_DIRS := include
 
 # ===== Flags =====
 CFLAGS  := -Wall -Wextra -O0 -g -ffreestanding -fno-builtin -fno-stack-protector \
-           -nostdlib -mcmodel=small -march=armv8-a
+           -nostdlib -mcmodel=small -march=armv8-a -fno-omit-frame-pointer
 ASFLAGS := $(CFLAGS) -x assembler-with-cpp
 LDFLAGS := -T linker.ld
 
@@ -21,7 +21,7 @@ CPPFLAGS += $(addprefix -I, $(INC_DIRS))
 # ===== Files =====
 OBJS = boot/head.o boot/vector_el1.o \
        kernel/kmain.o kernel/uart.o kernel/mmu.o kernel/exception.o \
-       kernel/generic_timer.o kernel/gic.o
+       kernel/generic_timer.o kernel/gic.o kernel/debug.o
 
 # ===== Targets =====
 .PHONY: all clean run runbin dump
@@ -43,6 +43,8 @@ boot/head.o: boot/head.S
 kernel/exception.o: kernel/exception.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
+kernel/debug.o: kernel/debug.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 kernel/generic_timer.o: kernel/generic_timer.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
