@@ -8,12 +8,18 @@ QEMU      ?= qemu-system-aarch64
 
 PLATFORM  ?= qemu
 INC_DIRS := include
+DEBUG ?= 1
 
 # ===== Flags =====
 CFLAGS  := -Wall -Wextra -O0 -g -ffreestanding -fno-builtin -fno-stack-protector \
            -nostdlib -mcmodel=small -march=armv8-a -fno-omit-frame-pointer
 ASFLAGS := $(CFLAGS) -x assembler-with-cpp
 LDFLAGS := -T linker.ld
+
+# Set DEBUG=1 on the make command line to enable logging
+ifeq ($(DEBUG),1)
+    CFLAGS += -DDEBUG
+endif
 
 CFLAGS += -DPLATFORM_$(PLATFORM)
 CPPFLAGS += $(addprefix -I, $(INC_DIRS))

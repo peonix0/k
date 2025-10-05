@@ -23,12 +23,12 @@ void gic_init() {
 
   // Enable IGroupNS1
   reg = mmio_r32(GICD_CTLR);
-  uart_putb(" GICD_CTLR: ", reg);
+  uart_logb(" GICD_CTLR: ", reg);
   mmio_w32(GICD_CTLR, reg | 0b10);
 
   // Mark CPU online
   reg = mmio_r32(GICR_WAKER);
-  uart_putb(" GICD_WAKER: ", reg);
+  uart_logb(" GICD_WAKER: ", reg);
   mmio_w32(GICR_WAKER, reg & (~0b10));
 
   // TODO: move it to redistributor specific code
@@ -38,18 +38,16 @@ void gic_init() {
 
   // maybe required during SMP
   // reg = mmio_r64(GICR_TYPER);
-  // uart_putb(" GICR_TYPER: ", reg);
+  // uart_logb(" GICR_TYPER: ", reg);
 
   // reg = READ_SYSREG64(MPIDR_EL1);
-  // uart_putb(" MPIDR_EL1: ", reg);
+  // uart_logb(" MPIDR_EL1: ", reg);
 
   reg = READ_SYSREG64(ICC_RPR_EL1) & 0xFF;
-  uart_puts(" ICC_RPR_EL1: ");
-  uart_putx(reg);
-  uart_puts("\n");
+  uart_logx(" ICC_RPR_EL1: ", reg);
 
   reg = READ_SYSREG64(DAIF);
-  uart_putb(" DAIF: ", reg);
+  uart_logb(" DAIF: ", reg);
   __asm__ __volatile__("msr daifclr, #7");
 }
 
@@ -203,11 +201,11 @@ void gicd_set_route(u32 intid, u64 mpidr) {
 
 void gicr_dump_info() {
   u32 reg = mmio_r32(GICR_ISENABLER0);
-  uart_putb(" GICR_ISENABLER0: ", reg);
+  uart_logb(" GICR_ISENABLER0: ", reg);
 
   reg = mmio_r32(GICR_ISACTIVER0);
-  uart_putb(" GICR_ISACTIVER0: ", reg);
+  uart_logb(" GICR_ISACTIVER0: ", reg);
 
   reg = mmio_r32(GICR_ISPENDR0);
-  uart_putb(" GICR_ISPEND0: ", reg);
+  uart_logb(" GICR_ISPEND0: ", reg);
 }
