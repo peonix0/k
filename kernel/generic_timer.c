@@ -44,6 +44,11 @@ void timer_enable_el0_access() {
 void timer_interrupt_set(bool enable) {
   // 0: TIMER_ENABLE, IMASK_, ISTATUS
   WRITE_SYSREG64(CNTP_CTL_EL0, enable);
+
+  gic_set_group(INTID_GENERIC_TIMER_P, 1);
+  gic_set_groupmod(INTID_GENERIC_TIMER_P, 1);
+  gic_set_priority(INTID_GENERIC_TIMER_P, 0xEF);
+
   gic_enable_intid(INTID_GENERIC_TIMER_P);
 }
 
