@@ -48,16 +48,16 @@ void sync_handler_el1(u64 esr, u64 elr, u64 spsr, u64 far) {
   }
 }
 
-void irq_handler_el1() { uart_logs("\n[IRQ] EL1h\n"); }
+void fiq_handler_el1() { uart_logs("\n[FIQ] EL1h\n"); }
 
-void fiq_handler_el1() {
+void irq_handler_el1() {
   u64 reg, iar;
   u32 intid;
 
   iar = gic_ack();
   intid = iar & 0xFFFFF;
 
-  uart_logs("\n[FIQ] EL1h\n");
+  uart_logs("\n[IRQ] EL1h\n");
   uart_logx(" INTID: ", intid);
 
   reg = READ_SYSREG64(ICC_RPR_EL1) & 0xF8;

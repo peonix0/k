@@ -11,10 +11,10 @@ _vectors:
     b       _sync_el1t       // Synchronous exceptions
 
     .balign 128             // base + 0x080
-    b       _fiq_el1t        // Fast interrupt
+    b       _irq_el1t        // Normal interrupt
 
     .balign 128             // base + 0x100
-    b       _irq_el1t        // Normal interrupt
+    b       _fiq_el1t        // Fast interrupt
 
     .balign 128             // base + 0x180
     b      _serr_el1t        // SErr exceptions
@@ -25,10 +25,11 @@ _vectors:
     b       _sync_el1h
 
     .balign 128
-    b       _fiq_el1h
+    b       _irq_el1h
 
     .balign 128
-    b       _irq_el1h
+    b       _fiq_el1h
+
 
     .balign 128
     b       _serr_el1h
