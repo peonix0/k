@@ -3,6 +3,7 @@
 #include "mmu.h"
 #include "uart.h"
 #include "gic.h"
+#include "mm/mem.h"
 
 
 void run_clock() {
@@ -31,7 +32,7 @@ void ghost16call() {
 }
 
 void test_memory_exception() {
-    volatile uint64_t *p = (uint64_t*)0xDEADBE000ULL;
+    volatile u64 *p = (u64*)0xDEADBE000ULL;
     (void)*p;
 }
 
@@ -73,6 +74,10 @@ void kmain(void *dtb) {
   gic_init();
   timer_interrupt_set(true);
   uart_enable_interrupt();
+
+  uart_puts("k: mm init\n");
+  mm_init();
+  mm_stats();
 
   for (;;) {
     __asm__ __volatile__("wfe");

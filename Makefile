@@ -27,7 +27,8 @@ CPPFLAGS += $(addprefix -I, $(INC_DIRS))
 # ===== Files =====
 OBJS = boot/head.o boot/vector_el1.o \
        kernel/kmain.o kernel/uart.o kernel/mmu.o kernel/exception.o \
-       kernel/generic_timer.o kernel/gic.o kernel/debug.o
+       kernel/generic_timer.o kernel/gic.o kernel/debug.o \
+       kernel/mm/mem.o kernel/mm/buddy.o
 
 # ===== Targets =====
 .PHONY: all clean run runbin dump
@@ -40,32 +41,11 @@ k.elf: $(OBJS) linker.ld
 k.bin: k.elf
 	$(OBJCOPY) -O binary $< $@
 
-boot/vector_el1.o: boot/vector_el1.S
+%.o: %.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+%.o: %.S
 	$(CC) $(ASFLAGS) -c $< -o $@
-
-boot/head.o: boot/head.S
-	$(CC) $(ASFLAGS) -c $< -o $@
-
-kernel/exception.o: kernel/exception.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-
-kernel/debug.o: kernel/debug.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-
-kernel/generic_timer.o: kernel/generic_timer.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-
-kernel/uart.o: kernel/uart.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-
-kernel/gic.o: kernel/gic.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-
-kernel/mmu.o: kernel/mmu.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-
-kernel/kmain.o: kernel/kmain.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 # Run using ELF as kernel (some QEMU builds accept this)
 run: k.elf
