@@ -1,7 +1,6 @@
 // mmu.h
 #ifndef __MMU_H__
 #define __MMU_H__
-#include <stdint.h>
 
 #define MAIR_ATTR_DEVnGnRE  0x00
 #define MAIR_ATTR_NORMALWB  0xff

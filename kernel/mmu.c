@@ -5,6 +5,7 @@
 __attribute__((aligned(4096))) static u64 L1[512]; // 1GB Each
 //__attribute__((aligned(4096))) static u64 L2_kernel[512]; // 2 MB Each
 __attribute__((aligned(4096))) static u64 L2_t1[512];
+__attribute__((aligned(4096))) static u64 L2_vma[512];
 
 
 // --------------------- DUMPING- JUMPING-----------------------------------//
@@ -76,9 +77,18 @@ extern char __text_start[]; // pick your kernel base symbol
 void mmu_enable(void){
     // map kernel @ 0x40200000 as Normal WB
 
-    u64 kva = 0x40200000ULL;
-    L1[L1_IDX(kva)] = desc_block_1g(kva, 0x1);
+    //u64 kva = 0x40200000ULL;
+    //L1[L1_IDX(kva)] = desc_block_1g(kva, 0x1);
     //L0[L0_IDX(kva)] = desc_table((u64) L1_kernel);
+
+    // map memory @ 0x40000000 (128MB- 0x8000000)
+    u64 vma = 0x40000000ULL;
+
+    L1[L1_IDX(vma)] = desc_table((u64) L2_vma);
+
+    for(u32 i=0; i<128; i++) {
+        L2_vma[L2_IDX(vma + (i << 21))] = desc_block_2m(vma + (i << 21), 0x1);
+    }
 
     // Map QEMU PL011 or RK UART as Device (AttrIdx0)
 #ifdef PLATFORM_qemu

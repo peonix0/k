@@ -23,6 +23,8 @@ typedef _Bool             bool;
 #define true  ((bool)1)
 #define false ((bool)0)
 
+#define NULL 0
+
 
 static inline void mmio_w8(u64 a, u8 v){ *(volatile u8*)a = v; }
 static inline u32 mmio_r8(u64 a){ return *(volatile u8*)a; }
@@ -55,5 +57,15 @@ void debug_backtrace();
 
 static inline void isb(void) { __asm__ volatile("isb" ::: "memory"); }
 static inline void dsb_ish(void) { __asm__ volatile("dsb ish" ::: "memory"); }
+
+#define offsetof(type, member) ((isize) & (((type *)0)->member))
+
+#define container_of(ptr, type, member)                                        \
+  ((type *)((char *)(ptr) - offsetof(type, member)))
+
+struct list_head {
+  struct list_head *next, *prev;
+};
+
 
 #endif // __HEADER_COMMON_H__
