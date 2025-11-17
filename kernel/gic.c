@@ -14,7 +14,7 @@ void gic_init() {
   isb();
 
   WRITE_SYSREG64(ICC_PMR_EL1, 0xFF);
-  WRITE_SYSREG64(ICC_BPR0_EL1, 0b011);
+  WRITE_SYSREG64(ICC_BPR1_EL1, 0b011);
   WRITE_SYSREG64(ICC_IGRPEN1_EL1, 0b1);
 
   // Setting up EOImode(bit1:0), both priority drop and interrupt deactivation
