@@ -44,6 +44,11 @@ void kmain(void *dtb) {
   (void)dtb;
   u64 ticks = 0;
   u32 tfreq = 0;
+  u64 el = 0;
+
+  el = READ_SYSREG64(CurrentEL);
+  el = el >> 2 & 3;
+  uart_logx("CurrentEL:", el);
 
   uart_puts("k: hello!\n");
 

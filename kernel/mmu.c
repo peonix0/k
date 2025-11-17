@@ -99,10 +99,14 @@ void mmu_enable(void){
     u64 l2_uart_entry = desc_block_2m(uva, 0x0);
     L2_t1[L2_IDX(uva)] = l2_uart_entry;
 
-
-    // map GIC
+// map GIC
+#ifdef PLATFORM_qemu
     u64 gic_dva = 0x08000000;  //64 KB
     // u64 gic_rdva = 0x080A0000; // 2MB, I only care about single frame (128KB)
+#else
+    u64 gic_dva = 0xfe600000;
+    //u64 gic_rdav = 0xfe680000;
+#endif
 
     L2_t1[L2_IDX(gic_dva)] = desc_block_2m(gic_dva, 0x0);
 

@@ -7,8 +7,14 @@
 
 #include "common.h"
 
+#ifdef PLATFORM_qemu
 #define D_BASE 0x08000000
 #define RD_BASE 0x080A0000
+#else
+#define D_BASE 0xfe600000
+#define RD_BASE 0xfe680000
+#endif
+
 #define SGI_BASE (RD_BASE + 0x10000)
 
 #define GICD_CTLR (D_BASE + 0x0000)

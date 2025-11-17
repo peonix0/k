@@ -14,6 +14,7 @@ DEBUG ?= 1
 CFLAGS  := -Wall -Wextra -O0 -g -ffreestanding -fno-builtin -fno-stack-protector \
            -nostdlib -mcmodel=small -march=armv8-a -fno-omit-frame-pointer
 ASFLAGS := $(CFLAGS) -x assembler-with-cpp
+ASFLAGS += -DPLATFORM_$(PLATFORM)
 LDFLAGS := -T linker.ld
 
 # Set DEBUG=1 on the make command line to enable logging

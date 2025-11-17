@@ -35,6 +35,10 @@ make run
 * Build `k.bin` with `PLATFORM=rk3588` and correct UART base/GIC init for RK3588.
 * Ensure DRAM is up (U-Boot SPL/TPL handles this).
 
+```bash
+make PLATFORM=rk3588
+```
+
 **From U-Boot shell (SD/eMMC FAT/ext4):**
 
 ```bash
